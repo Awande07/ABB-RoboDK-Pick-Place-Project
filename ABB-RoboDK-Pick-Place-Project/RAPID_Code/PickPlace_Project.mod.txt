@@ -1,0 +1,51 @@
+MODULE PickPlace_Project
+  ! --- DATA DECLARATIONS ---
+  ! These match your RoboDK targets exactly
+  VAR robtarget pHome := [[0,0,500],[1,0,0,0],[0,0,0,0],[9E+9,9E+9,9E+9,9E+9,9E+9,9E+9]];
+  VAR robtarget pApproach_A := [[-500,-300,130],[1,0,0,0],[0,0,0,0],[9E+9,9E+9,9E+9,9E+9,9E+9,9E+9]];
+  VAR robtarget pPick_Pos := [[-500,-300,80],[1,0,0,0],[0,0,0,0],[9E+9,9E+9,9E+9,9E+9,9E+9,9E+9]];
+  VAR robtarget pApproach_Machine := [[0,400,150],[1,0,0,0],[0,0,0,0],[9E+9,9E+9,9E+9,9E+9,9E+9,9E+9]];
+  VAR robtarget pPlace_Pos := [[0,400,100],[1,0,0,0],[0,0,0,0],[9E+9,9E+9,9E+9,9E+9,9E+9,9E+9]];
+  
+  ! Step 10: Logic Variable
+  VAR num parts_processed := 0;
+
+  ! --- MAIN PROGRAM ---
+  PROC Main()
+    ConfJ \Off;  ! Ignore axis configuration for simulation
+    ConfL \Off;
+    
+    WHILE TRUE DO
+      ! Step 10.2: Wait for part (Sensor Simulation)
+      WaitTime 2.0; 
+
+      ! Step 7: Movement to Conveyor A
+      MoveJ pHome, v500, z50, toolGrip;
+      MoveJ pApproach_A, v300, z10, toolGrip;
+      MoveL pPick_Pos, v100, fine, toolGrip;
+      
+      ! Step 8: Close Gripper (Digital Output)
+      Set doGripClose; 
+      WaitTime 0.3;
+
+      MoveL pApproach_A, v100, z50, toolGrip;
+      
+      ! Move to Machine Station
+      MoveJ pApproach_Machine, v300, z50, toolGrip;
+      MoveL pPlace_Pos, v100, fine, toolGrip;
+      
+      ! Step 8/9: Machine Process
+      Reset doGripClose;    ! Open Gripper
+      Set doStartMachine;   ! Start the yellow machine
+      WaitTime 3.0;         ! Step 8.3: Machining time
+      
+      MoveL pApproach_Machine, v100, z50, toolGrip;
+
+      ! Step 10: Update Counter (The Python Logic)
+      parts_processed := parts_processed + 1;
+      TPWrite "Total Parts Processed: " \Num:=parts_processed;
+      
+      MoveJ pHome, v500, z50, toolGrip;
+    ENDWHILE
+  ENDPROC
+ENDMODULE

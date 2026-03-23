@@ -1,0 +1,16 @@
+from robodk import robolink
+RDK = robolink.Robolink()
+
+# 1. Try to get the variable. If it's missing, start at 0.
+count = RDK.getParam('parts_processed')
+if count is None:
+    count = 0  # <--- This creates the variable if it's missing!
+else:
+    count = int(count)
+
+# 2. Add 1 and save it back
+count += 1
+RDK.setParam('parts_processed', count)
+
+# 3. Show it on screen
+RDK.ShowMessage(f"Parts Processed: {count}", False)

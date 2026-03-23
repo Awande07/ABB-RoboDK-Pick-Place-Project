@@ -1,0 +1,53 @@
+### **I_O_Signals.md**
+
+# I/O Signals Reference
+
+## Simulated Signals (RoboDK Event Manager)
+
+| Signal Name | Type | Event | Purpose |
+|-------------|------|-------|---------|
+| Grip_Close | Output | Attach Object | Pick up part |
+| Grip_Open | Output | Detach Object | Release part |
+| StartProcess | Output | Wait 3s | Begin machining |
+| PartAtPick | Input | Wait 2s | Part detection |
+
+## Real ABB RAPID Signals (For Actual Robot)
+
+### Digital Outputs
+| Signal | Address | Purpose |
+|--------|---------|---------|
+| doGripClose | DO_01 | Activate vacuum gripper |
+| doGripOpen | DO_02 | Deactivate vacuum |
+| doStartMachine | DO_03 | Start machining process |
+| doConveyorA | DO_04 | Run input conveyor |
+| doConveyorB | DO_05 | Run output conveyor |
+
+### Digital Inputs
+| Signal | Address | Purpose |
+|--------|---------|---------|
+| diPartAtPick | DI_01 | Part detected at pick position |
+| diProcessComplete | DI_02 | Machining cycle finished |
+| diEmergencyStop | DI_03 | Emergency stop active |
+| diAutoMode | DI_04 | Auto mode selected |
+
+### Configuration in RobotStudio
+
+Signal doGripClose:
+
+    Type: Digital Output
+
+    Address: 1
+
+    Unit: dsqc651
+
+    Category: Gripper Control
+
+Signal diPartAtPick:
+
+    Type: Digital Input
+
+    Address: 1
+
+    Unit: dsqc651
+
+    Category: Conveyor Sensors

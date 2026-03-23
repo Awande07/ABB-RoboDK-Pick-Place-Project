@@ -1,0 +1,215 @@
+### **Project_Report.md**
+
+# Project Report: ABB IRB 1200 Pick & Place Simulation
+
+## 1. Project Objective
+To design, simulate, and document a complete pick-and-place automation cell using ABB IRB 1200 robot, demonstrating industrial robotics skills.
+
+## 2. System Components
+
+### 2.1 Physical Layout
+| Component | Dimensions | Position | Purpose |
+|-----------|------------|----------|---------|
+| IRB 1200 Robot | 6-axis | Center | Main manipulator |
+| Input Conveyor | 800×200mm | X=-400, Y=-200 | Part supply |
+| Output Conveyor | 800×200mm | X=400, Y=-200 | Finished parts |
+| Machining Station | 200×200×50mm | X=0, Y=-250 | Process simulation |
+| Vacuum Gripper | 4-cup | Tool flange | Part handling |
+
+### 2.2 Targets Created
+| Target | Coordinates (X,Y,Z) | Work Object |
+|--------|---------------------|-------------|
+| Home | (300,0,200) | World |
+| Approach_A | (-500,-300,130) | Conveyor A |
+| Pick_Pos | (-500,-300,80) | Conveyor A |
+| Approach_Machine | (0,400,150) | Machine |
+| Place_Pos | (0,400,100) | Machine |
+| Approach_B | (500,300,80) | Conveyor B |
+| Place_B | (500,300,30) | Conveyor B |
+
+## 3. TCP Calibration Results
+
+### 3.1 Method
+- 4-point calibration using reference point
+- Rotation test with Joint 6 (wrist)
+
+### 3.2 Verification
+| Test | Result |
+|------|--------|
+| Rotate 90° | Z-axis fixed, X/Y rotate |
+| Rotate 180° | Z-axis fixed, X/Y inverted |
+| Rotate -90° | Symmetric to 90° |
+
+### 3.3 TCP Values
+- X offset: 0 mm
+- Y offset: 0 mm
+- Z offset: 150 mm (gripper length)
+
+## 4. Program Flow
+
+### 4.1 State Machine
+
+STATE 0: IDLE
+↓ (Part detected)
+STATE 1: APPROACH PICK
+↓
+STATE 2: PICK PART
+↓
+STATE 3: MOVE TO MACHINE
+↓
+STATE 4: PLACE IN MACHINE
+↓
+STATE 5: PROCESS (3s wait)
+↓
+STATE 6: PICK FROM MACHINE
+↓
+STATE 7: MOVE TO CONVEYOR B
+↓
+STATE 8: PLACE PART
+↓
+STATE 9: COUNT & DISPLAY
+↓ (Loop to STATE 0)
+
+
+### 4.2 Timing
+| Step | Duration |
+|------|----------|
+| Part arrival wait | 2.0 s |
+| Pick operation | 0.5 s |
+| Travel to machine | 1.0 s |
+| Machining process | 3.0 s |
+| Travel to conveyor B | 1.0 s |
+| Place operation | 0.5 s |
+| **Total Cycle Time** | **~8.0 s** |
+
+## 5. I/O Simulation
+
+### 5.1 Signals (Simulated)
+| Signal | Type | Purpose |
+|--------|------|---------|
+| PartAtPick | Input | Part detected on conveyor |
+| ProcessComplete | Input | Machining finished |
+| Grip_Close | Output | Activate vacuum |
+| Grip_Open | Output | Release vacuum |
+| StartProcess | Output | Begin machining |
+
+### 5.2 Event Manager Implementation
+- **Close_Grip program:** Attach object (simulates vacuum)
+- **Open_Grip program:** Detach object
+- **ProcessCycle program:** 3-second wait + status toggle
+
+## 6. Production Counter
+
+### 6.1 Python Script Logic
+
+python
+
+count = getParam('parts_processed') or 0
+count += 1
+setParam('parts_processed', count)
+ShowMessage(f"Parts: {count}")
+
+6.2 Integration
+
+    Called after successful placement
+
+    Updates both internal variable and screen display
+
+    Mimics HMI (Human-Machine Interface) behavior
+
+7. ABB RAPID Code Mapping
+
+7.1 RoboDK to RAPID Translation
+RoboDK Element	RAPID Equivalent
+Target	robtarget
+Program	PROC
+MoveJ instruction	MoveJ
+MoveL instruction	MoveL
+Wait instruction	WaitTime
+Python script	VAR num + TPWrite
+
+7.2 Manual Export Method
+
+Due to free version limitations, RAPID code was manually constructed:
+
+    Extract target coordinates from RoboDK
+
+    Map movement sequence from simulation
+
+    Convert Python counter to RAPID variable logic
+
+    Format as standard ABB module
+
+8. Challenges & Solutions
+
+Challenge	                        Solution
+Free version save/open limit	        Completed project in single session
+No RAPID export	                        Manual code mapping
+No Custom Property menu	                Used Station Parameters window
+No I/O simulation	                Event Manager with Attach/Detach
+No PLC sensor	                        Wait 2.0s simulation
+Conveyor folder issue	                Left conveyors at top level
+
+9. Skills Developed
+
+9.1 Technical
+
+    ABB RAPID syntax understanding
+
+    TCP calibration methodology
+
+    Work object coordinate systems
+
+    RoboDK Python API
+
+    Industrial automation logic
+
+9.2 Professional
+
+    Project documentation
+
+    Free version workarounds
+
+    GitHub portfolio structuring
+
+    Technical writing
+
+10. Future Improvements
+
+With full version access:
+
+    Add real I/O signals with PLC simulation
+
+    Implement collision detection
+
+    Add multiple part types
+
+    Integrate vision system
+
+    Export directly to ABB robot
+
+With ROS2 integration:
+
+    Connect to ROS2 nodes
+
+    Add perception (camera) feedback
+
+    Implement path planning algorithms
+
+    Create full Digital Twin ecosystem
+
+11. Conclusion
+
+This project successfully demonstrates:
+
+    Complete pick-and-place automation cell
+
+    Professional robot programming skills
+
+    TCP calibration and precision work
+
+    Production tracking logic
+
+    Code ready for real ABB robots
+
+The free version limitations were overcome through manual workarounds, proving adaptability and problem-solving skills essential for industrial automation roles.

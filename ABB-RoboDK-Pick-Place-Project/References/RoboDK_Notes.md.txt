@@ -1,0 +1,50 @@
+# RoboDK Learning Notes
+
+## Installation
+- Version: Latest free version
+- Platform: Windows
+- Robot: ABB IRB 1200-5/0.9
+
+## Keyboard Shortcuts
+| Action | Shortcut |
+|--------|----------|
+| Rotate view | Right-click + drag |
+| Pan view | Ctrl + right-click + drag |
+| Zoom | Scroll wheel |
+| Select object | Click |
+| Move object | Alt + drag |
+| Add target | Right-click robot → Add Target |
+
+## Tips for Free Version
+1. Save station early and often
+2. Complete projects in one session (save/load limited)
+3. Use Event Manager for I/O simulation
+4. Python scripts for logic (counters, displays)
+5. Manual RAPID export when needed
+
+## Python API Quick Reference
+
+  python
+
+from robodk import robolink
+RDK = robolink.Robolink()
+
+# Get robot
+robot = RDK.Item('IRB 1200')
+
+# Get targets
+target = RDK.Item('Pick_Pos')
+
+# Move robot
+robot.MoveJ(target)
+
+# Get/Set parameters
+value = RDK.getParam('my_variable')
+RDK.setParam('my_variable', value)
+
+# Display message
+RDK.ShowMessage("Text", False)
+
+# Add instruction
+prog = RDK.Item('MyProgram', robolink.ITEM_TYPE_PROGRAM)
+prog.RunInstruction('Wait 1', robolink.INSTRUCTION_WAIT_TIME)

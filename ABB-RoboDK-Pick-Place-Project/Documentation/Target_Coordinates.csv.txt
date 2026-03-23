@@ -1,0 +1,8 @@
+Target Name,Work Object,X (mm),Y (mm),Z (mm),Rx (deg),Ry (deg),Rz (deg)
+Home,World,300,0,200,0,0,0
+Approach_A,Conveyor A,-500,-300,130,0,0,0
+Pick_Pos,Conveyor A,-500,-300,80,0,0,0
+Approach_Machine,Machine,0,400,150,0,0,0
+Place_Pos,Machine,0,400,100,0,0,0
+Approach_B,Conveyor B,500,300,80,0,0,0
+Place_B,Conveyor B,500,300,30,0,0,0
